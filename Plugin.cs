@@ -115,7 +115,15 @@ public sealed class Plugin : IDalamudPlugin {
         if (!SetupGlamourerIpc()) return;
         try {
             if (value) 
+            {
                 tempCustomization = getAll?.InvokeFunc(ClientState.LocalPlayer) ?? string.Empty;
+                var bytes = Convert.FromBase64String(tempCustomization);
+                if (string.IsNullOrEmpty(tempCustomization)) return;
+                if (bytes.Length < 90) return;
+                bytes[88] = 128;
+                bytes[89] = 63;
+                tempCustomization = Convert.ToBase64String(bytes);
+            }
             else
                 applyAll?.InvokeAction(tempCustomization, ClientState.LocalPlayer);
         } catch {
